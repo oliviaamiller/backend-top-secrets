@@ -11,4 +11,16 @@ describe('backend-top-secrets routes', () => {
   afterAll(() => {
     pool.end();
   });
+
+  it('registers a user with an email and password', async () => {
+    const res = await request(app)
+      .post('/api/v1/users')
+      .send({ 
+        email: 'ernie@longdog.com',
+        password: 'littlekitty1'
+      });
+
+    expect(res.body).toEqual({ id: expect.any(String), email: 'ernie@longdog.com' });
+  });
+
 });
