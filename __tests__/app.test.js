@@ -42,7 +42,7 @@ describe('backend-top-secrets routes', () => {
 
   it('logs in an existing user with email and password and returns current user', async () => {
     const [agent, user] = await registerAndLogin();
-    const thisUser = await agent.get('/api/v1/users/id');
+    const thisUser = await agent.get('/api/v1/users/:id');
 
     expect(thisUser.body).toEqual({
       ...user,
