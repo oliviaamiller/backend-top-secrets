@@ -58,4 +58,29 @@ describe('backend-top-secrets routes', () => {
   });
 
 
+  it('allows logged in users to view secrets', async () => {
+    const user = {
+      email: 'ernie@longdog.com',
+      password: 'littlekitty1'
+    };
+
+    await UserService.create(user);
+
+    const agent = request.agent(app);
+
+    let res = await agent
+      .get('/api/v1/secrets');
+    
+    expect(res.status).toEqual(401);
+
+    await agent
+      .post('/api/v1/users/sessions')
+      .send(user);
+    
+    res = await agent
+      .get('/api/v1/secrets');
+
+    expect(res.status).toEqual(200);
+  });
+
 });
