@@ -68,19 +68,12 @@ describe('backend-top-secrets routes', () => {
 
     const agent = request.agent(app);
 
-    let res = await agent
-      .get('/api/v1/secrets');
-    
-    expect(res.status).toEqual(401);
-
-    await agent
+    const res = await agent
       .post('/api/v1/users/sessions')
-      .send(user);
-    
-    res = await agent
+      .send(user)
       .get('/api/v1/secrets');
 
-    expect(res.status).toEqual(200);
+    expect(res.body).toEqual({ message: 'TOP SECRETS!' });
   });
 
 });
