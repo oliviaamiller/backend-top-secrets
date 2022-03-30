@@ -3,7 +3,7 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const UserService = require('../lib/services/UserService');
-const User = require('../lib/models/User');
+//const User = require('../lib/models/User');
 
 
 describe('backend-top-secrets routes', () => {
@@ -47,6 +47,7 @@ describe('backend-top-secrets routes', () => {
     expect(res.body).toEqual({ message: 'Signed in, welcome back!' });
   });
 
+
   it('logs out a user', async () => {
     const user = {
       email: 'ernie@longdog.com',
@@ -62,7 +63,6 @@ describe('backend-top-secrets routes', () => {
     const res = await agent
       .post('/api/v1/users/sessions')
       .send(returningUser);
-
 
     expect(res.body).toEqual({
       success: true,
