@@ -58,6 +58,27 @@ describe('backend-top-secrets routes', () => {
   });
 
 
+  it('allows logged in users to create new secrets', async () => {
+    const user = {
+      email: 'ernie@longdog.com',
+      password: 'littlekitty1'
+    };
+
+    await UserService.create(user);
+
+    const agent = request.agent(app);
+
+    await agent
+      .post('/api/v1/users/sessions')
+      .send(user);
+
+    const res = await agent
+      .post('/api/v1/secrets');
+
+    expect(res.body).toEqual('new secret');
+  });
+
+
   it('allows logged in users to view secrets', async () => {
     const user = {
       email: 'ernie@longdog.com',
@@ -68,12 +89,15 @@ describe('backend-top-secrets routes', () => {
 
     const agent = request.agent(app);
 
-    const res = await agent
+    await agent
       .post('/api/v1/users/sessions')
-      .send(user)
+      .send(user);
+
+    const res = await agent
       .get('/api/v1/secrets');
 
     expect(res.body).toEqual({ message: 'TOP SECRETS!' });
   });
+
 
 });
