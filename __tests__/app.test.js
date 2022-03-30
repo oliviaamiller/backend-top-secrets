@@ -49,21 +49,9 @@ describe('backend-top-secrets routes', () => {
 
 
   it('logs out a user', async () => {
-    const user = {
-      email: 'ernie@longdog.com',
-      password: 'littlekitty1'
-    };
-
-    const newUser = await UserService.create(user);
-
-    const returningUser = await UserService.logIn(newUser);
-
-    const agent = request.agent(app);
-
-    const res = await agent
-      .post('/api/v1/users/sessions')
-      .send(returningUser);
-
+    const res = await request(app)
+      .delete('/api/v1/users/sessions');
+  
     expect(res.body).toEqual({
       success: true,
       message: 'You have signed out!'
