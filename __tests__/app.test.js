@@ -89,14 +89,28 @@ describe('backend-top-secrets routes', () => {
 
     const agent = request.agent(app);
 
+    let res = await agent
+      .get('/api/v1/secrets');
+    
+    expect(res.body).toEqual({ 
+      message: 'You need to sign in', status: 401 
+    });
+
     await agent
       .post('/api/v1/users/sessions')
       .send(user);
 
-    const res = await agent
+    res = await agent
       .get('/api/v1/secrets');
 
-    expect(res.body).toEqual({ message: 'TOP SECRETS!' });
+    const expected = [{
+      id: expect.any(String),
+      title: 'big secret',
+      description: 'earth is round',
+      createdAt: expect.any(String)
+    }];
+
+    expect(res.body).toEqual(expected);
   });
 
 
