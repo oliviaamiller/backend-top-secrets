@@ -3,6 +3,7 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const UserService = require('../lib/services/UserService');
+const Secret = require('../lib/models/Secret');
 
 
 describe('backend-top-secrets routes', () => {
@@ -58,27 +59,6 @@ describe('backend-top-secrets routes', () => {
   });
 
 
-  it('allows logged in users to create new secrets', async () => {
-    const user = {
-      email: 'ernie@longdog.com',
-      password: 'littlekitty1'
-    };
-
-    await UserService.create(user);
-
-    const agent = request.agent(app);
-
-    await agent
-      .post('/api/v1/users/sessions')
-      .send(user);
-
-    const res = await agent
-      .post('/api/v1/secrets');
-
-    expect(res.body).toEqual('new secret');
-  });
-
-
   it('allows logged in users to view secrets', async () => {
     const user = {
       email: 'ernie@longdog.com',
@@ -109,6 +89,42 @@ describe('backend-top-secrets routes', () => {
       description: 'earth is round',
       createdAt: expect.any(String)
     }];
+
+    expect(res.body).toEqual(expected);
+  });
+
+
+  it('allows logged in users to create new secrets', async () => {
+    const user = {
+      email: 'ernie@longdog.com',
+      password: 'littlekitty1'
+    };
+
+    const expected = {
+      id: expect.any(String),
+      title: 'newest secret',
+      description: 'earth is flat',
+      createdAt: expect.any(String)
+    };
+
+    await UserService.create(user);
+
+    const agent = request.agent(app);
+
+    let res = await agent
+      .get('/api/v1/secrets');
+    
+    expect(res.body).toEqual({ 
+      message: 'You need to sign in', status: 401 
+    });
+
+    await agent
+      .post('/api/v1/users/sessions')
+      .send(user);
+
+    res = await agent
+      .post('/api/v1/secrets')
+      .send(expected);
 
     expect(res.body).toEqual(expected);
   });
